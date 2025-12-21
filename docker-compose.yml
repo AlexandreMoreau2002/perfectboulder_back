@@ -1,0 +1,19 @@
+name: ${INSTANCE:-perfectboulder_default}
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./app:/app/app
+    restart: always
+    networks:
+      - perfectboulder_net
+
+networks:
+  perfectboulder_net:
