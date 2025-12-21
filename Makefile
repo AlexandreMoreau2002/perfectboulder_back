@@ -1,13 +1,32 @@
-.PHONY: up down logs shell
+.DEFAULT_GOAL := help
 
-up:
+help:
+	@echo "Commandes disponibles :"
+	@grep -E '^[a-zA-Z0-9_-]+:' Makefile | cut -d':' -f1
+
+start:
+	docker compose up -d
+
+start-build:
 	docker compose up --build -d
 
-down:
+restart:
+	docker compose stop
+	docker compose up -d
+
+stop:
 	docker compose down
 
-logs:
-	docker compose logs -f
+reset:
+	docker compose down
+	docker compose up --build -d
 
-shell:
-	docker compose exec backend /bin/bash
+reset-volumes:
+	docker compose down --volumes
+	docker compose up --build -d
+
+code:
+	docker compose exec backend bash
+
+log:
+	docker compose logs --tail=50 -f backend

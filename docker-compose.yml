@@ -1,4 +1,4 @@
-name: ${INSTANCE:-perfectboulder_default}
+name: ${INSTANCE:-perfectboulder-local}
 
 services:
   backend:
