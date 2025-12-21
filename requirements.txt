@@ -1,2 +1,7 @@
 fastapi
+pydantic
+pydantic-settings
+psycopg[binary]
+strawberry-graphql
 uvicorn[standard]
+ruff==0.6.8
