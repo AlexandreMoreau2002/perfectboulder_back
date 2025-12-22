@@ -3,28 +3,15 @@ from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 
 from app.config import get_settings
-from app.routes.health import router as health_router
-from app.services.database import ensure_database_ready
+from app.adapters.graphql.schema import create_schema
+from app.adapters.rest.health import router as health_router
+from app.infra.database.probe import ensure_database_ready
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
 
-    @strawberry.type
-    class Query:
-        @strawberry.field
-        def status(self) -> str:
-            return "ok"
-
-        @strawberry.field
-        def service_name(self) -> str:
-            return settings.app_name
-
-        @strawberry.field
-        def database_dsn(self) -> str:
-            return settings.safe_database_url
-
-    graphql_app = GraphQLRouter(strawberry.Schema(Query))
+    graphql_app = GraphQLRouter(create_schema(settings))
 
     application = FastAPI(title=settings.app_name)
 

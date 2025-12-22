@@ -25,6 +25,14 @@ Minimal FastAPI backend with Docker support, PostgreSQL, and GraphQL.
    - `make down`: Stop containers
    - `make lint`: Run lint checks (ruff)
 
+## Architecture
+
+The backend follows a lightweight hexagonal layout:
+- `domain/`: pure domain objects.
+- `application/`: use cases/services producing responses.
+- `adapters/rest` and `adapters/graphql`: transport adapters.
+- `infra/`: database and other infrastructure (e.g., connection probe).
+
 ## Configuration
 
 | Variable          | Description                                   | Default            |
