@@ -26,7 +26,10 @@ reset-volumes:
 	docker compose up --build -d
 
 code:
-	docker compose exec backend bash
+	docker compose exec backend /bin/bash
 
 log:
 	docker compose logs --tail=50 -f backend
+
+lint:
+	docker compose exec backend python -m ruff check app
