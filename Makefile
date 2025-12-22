@@ -13,4 +13,4 @@ shell:
 	docker compose exec backend /bin/bash
 
 lint:
-	python -m ruff check app
+	docker compose exec backend python -m ruff check app
