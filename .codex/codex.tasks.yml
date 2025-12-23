@@ -1,0 +1,124 @@
+tasks:
+  # === Development ===
+  start:
+    desc: "Start development stack in background"
+    cmd: "make start"
+
+  start-build:
+    desc: "Rebuild and start all services"
+    cmd: "make start-build"
+
+  restart:
+    desc: "Restart services without rebuild"
+    cmd: "make restart"
+
+  stop:
+    desc: "Stop and remove containers"
+    cmd: "make stop"
+
+  reset:
+    desc: "Nuclear reset: rebuild everything"
+    cmd: "make reset"
+
+  reset-volumes:
+    desc: "DANGER: Reset including database volumes (destroys data)"
+    cmd: "make reset-volumes"
+
+  # === Monitoring ===
+  logs:
+    desc: "Tail backend logs (last 50 lines)"
+    cmd: "make log"
+
+  logs-all:
+    desc: "Tail all service logs"
+    cmd: "docker compose logs -f"
+
+  logs-db:
+    desc: "Tail database logs"
+    cmd: "docker compose logs -f db"
+
+  ps:
+    desc: "List running containers"
+    cmd: "docker compose ps"
+
+  stats:
+    desc: "Show container resource usage"
+    cmd: "docker stats"
+
+  # === Code Access ===
+  shell:
+    desc: "Open bash shell in backend container"
+    cmd: "make code"
+
+  shell-root:
+    desc: "Open root shell in backend container"
+    cmd: "docker compose exec -u root backend /bin/bash"
+
+  # === Code Quality ===
+  lint:
+    desc: "Run ruff linter (check only)"
+    cmd: "make lint"
+
+  lint-fix:
+    desc: "Run ruff with auto-fix"
+    cmd: "docker compose exec backend python -m ruff check app --fix"
+
+  format:
+    desc: "Format code with ruff"
+    cmd: "docker compose exec backend python -m ruff format app"
+
+  format-check:
+    desc: "Check formatting without applying"
+    cmd: "docker compose exec backend python -m ruff format app --check"
+
+  # === Database ===
+  db-connect:
+    desc: "Connect to PostgreSQL via psql"
+    cmd: "docker compose exec db psql -U perfectboulder -d perfectboulder"
+
+  db-list-tables:
+    desc: "List all database tables"
+    cmd: "docker compose exec db psql -U perfectboulder -d perfectboulder -c '\\dt'"
+
+  db-backup:
+    desc: "Backup database to backup.sql"
+    cmd: "docker compose exec db pg_dump -U perfectboulder perfectboulder > backup.sql"
+
+  db-restore:
+    desc: "Restore database from backup.sql"
+    cmd: "docker compose exec -T db psql -U perfectboulder -d perfectboulder < backup.sql"
+
+  # === Testing (when implemented) ===
+  test:
+    desc: "Run all tests (when pytest installed)"
+    cmd: "docker compose exec backend pytest"
+
+  test-coverage:
+    desc: "Run tests with coverage report"
+    cmd: "docker compose exec backend pytest --cov=app --cov-report=term-missing"
+
+  test-watch:
+    desc: "Run tests in watch mode"
+    cmd: "docker compose exec backend pytest-watch"
+
+  # === API Testing ===
+  health:
+    desc: "Check health endpoint"
+    cmd: "curl -s http://localhost:8000/health | python -m json.tool"
+
+  graphql-introspect:
+    desc: "GraphQL introspection query"
+    cmd: "curl -s -X POST http://localhost:8000/graphql -H 'Content-Type: application/json' -d '{\"query\": \"{__schema{types{name}}}\"}' | python -m json.tool"
+
+  # === Utilities ===
+  clean:
+    desc: "Clean Python cache files"
+    cmd: "find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true"
+
+  deps-update:
+    desc: "Show outdated pip packages"
+    cmd: "docker compose exec backend pip list --outdated"
+
+  deps-install:
+    desc: "Install/update dependencies from requirements.txt"
+    cmd: "docker compose exec backend pip install -r requirements.txt"

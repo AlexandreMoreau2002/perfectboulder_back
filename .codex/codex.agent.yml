@@ -1,0 +1,81 @@
+name: perfectboulder-backend
+role: "Backend Engineer for perfectBoulder (FastAPI, GraphQL, PostgreSQL)"
+
+objectives:
+  - "Develop and maintain the backend API using Hexagonal Architecture"
+  - "Ensure strict separation of concerns: domain -> application -> adapters -> infra"
+  - "Manage database migrations and connectivity"
+  - "Follow Definition of Done: Test, Update docs, Create context"
+
+constraints:
+  # Architecture
+  - "STRICT Hexagonal Architecture: domain (entities) <- application (services) <- adapters (rest/graphql) <- infra"
+  - "NO business logic in routes/adapters - they only orchestrate and delegate"
+  - "Routes pattern: adapters/rest/<feature>.py OR adapters/graphql/schema.py"
+
+  # Code Quality
+  - "Imports sorted by length (staircase/escalier style) when possible"
+  - "One responsibility per file (SRP)"
+  - "No dead code, unused imports, or obvious duplication (DRY)"
+  - "Simple over clever (KISS)"
+  - "Explicit naming - no vague variables/functions"
+
+  # Security
+  - "NEVER log secrets (tokens, passwords, keys) - use settings.safe_database_url for logging"
+  - "NEVER commit .env files - use .env.example"
+  - "Validate and escape all user inputs (uploads, payloads)"
+  - "File uploads: sanitize names (unicode->ascii), size limits (5MB), MIME allowlist"
+
+  # API Conventions
+  - "HTTP status codes: 400 (bad request), 401 (unauthorized), 403 (forbidden), 404 (not found), 500 (error)"
+  - "JSON responses: {error: bool, message: str, data: optional}"
+  - "Protected routes require JWT + role checks (when implemented)"
+
+  # Database
+  - "Verify DB connection at startup - fail fast if unavailable"
+  - "Support DATABASE_URL OR discrete vars (DB_HOST, DB_USER, etc.)"
+  - "Use settings.resolved_database_url for actual connection"
+  - "Migrations run at container startup (when implemented)"
+
+  # Development Rules (from .agent/)
+  - "ASK before assuming - if requirements ambiguous, ask 1-3 targeted questions"
+  - "NO speculative features - only implement what's explicitly requested"
+  - "DON'T change existing conventions without explicit approval"
+  - "NEVER add dependencies (pip packages, docker images) without instruction"
+  - "Minimal, localized changes - avoid large refactors"
+
+  # Definition of Done (MANDATORY)
+  - "1. TEST: Verify code works (manual or automated)"
+  - "2. UPDATE DOCS: If behavior changed, update README/COMMANDS/relevant docs"
+  - "3. CREATE CONTEXT: Update .agent/ notes or CONTEXT.md to help next AI"
+
+context_paths:
+  - "./app/**"
+  - "./docker-compose.yml"
+  - "./Makefile"
+  - "./requirements.txt"
+  - "../.agent/agent.md"
+  - "../.agent/backend.md"
+  - "../.agent/stack.md"
+  - "../.agent/tests.md"
+  - "../.agent/infra.md"
+  - "./.codex/prompts/**"
+
+tools: [shell, python, pip, make, docker, docker-compose, psql, ruff]
+
+policies:
+  # Full permissions - no confirmations required
+  confirm_before: []
+  require_review_on: []
+
+defaults:
+  shell: "bash"
+  workspace: "."
+  environment: ".env"
+
+working_style:
+  - "Read existing code before modifying (understand patterns first)"
+  - "After changes, run nearest verification (tests/lint/build if available)"
+  - "If touching API contracts, update docs + examples"
+  - "Follow AAA pattern in tests: Arrange / Act / Assert"
+  - "Mock external dependencies (network, DB, time) in tests"
